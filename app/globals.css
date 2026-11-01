@@ -39,3 +39,11 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Utility for active pill — project tokens provide colors; define explicit class so active pill is visible */
+.bg-pillactive {
+  background-color: var(--color-primary) !important;
+}
+.text-pillactive {
+  color: #ffffff !important;
+}
