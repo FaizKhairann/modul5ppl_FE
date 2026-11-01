@@ -32,9 +32,9 @@ export default function Pagination({
   return (
     <nav
       aria-label="Navigasi Halaman"
-      className="mt-6 flex flex-col items-center justify-between gap-4 rounded-[10px] border border-borderline bg-surface p-3 px-4 sm:flex-row"
+      className="mt-5 flex flex-col items-center justify-between gap-3 rounded-[10px] border border-borderline bg-surface p-2.5 px-3.5 sm:flex-row"
     >
-      <div className="text-[14px] text-textmuted">
+      <div className="text-[13px] text-textmuted">
         Menampilkan <span className="font-semibold text-textmain">{startItem}-{endItem}</span> dari <span className="font-semibold text-textmain">{totalItems}</span> produk
       </div>
 
@@ -44,7 +44,7 @@ export default function Pagination({
           aria-label="Halaman Sebelumnya"
           disabled={page === 1}
           onClick={() => goToPage(page - 1)}
-          className="flex h-8 w-8 items-center justify-center rounded-[6px] border border-borderline bg-surface text-textmain transition-colors duration-150 hover:bg-neutral-bg disabled:cursor-not-allowed disabled:bg-pillsubtle disabled:text-border-subtle disabled:opacity-60"
+          className="flex h-[30px] w-[30px] items-center justify-center rounded-[6px] border border-borderline bg-surface text-textmain transition-colors duration-150 hover:bg-neutral-bg disabled:cursor-not-allowed disabled:bg-pillsubtle disabled:text-border-subtle disabled:opacity-60"
         >
           <span className="material-symbols-outlined text-[18px]">chevron_left</span>
         </button>
@@ -60,8 +60,8 @@ export default function Pagination({
               onClick={() => goToPage(pageNumber)}
               className={
                 isActive
-                  ? "flex h-8 w-8 items-center justify-center rounded-[6px] bg-primary font-headline text-[13px] font-bold text-white shadow-sm"
-                  : "flex h-8 w-8 items-center justify-center rounded-[6px] border border-borderline bg-surface font-body text-[13px] font-medium text-textmain transition-colors duration-150 hover:bg-neutral-bg hover:border-primary"
+                  ? "flex h-[30px] w-[30px] items-center justify-center rounded-[6px] bg-primary font-headline text-[12px] font-bold text-white shadow-sm"
+                  : "flex h-[30px] w-[30px] items-center justify-center rounded-[6px] border border-borderline bg-surface font-body text-[12px] font-medium text-textmain transition-colors duration-150 hover:bg-neutral-bg hover:border-primary"
               }
             >
               {pageNumber}
@@ -74,7 +74,7 @@ export default function Pagination({
           aria-label="Halaman Selanjutnya"
           disabled={page === totalPages}
           onClick={() => goToPage(page + 1)}
-          className="flex h-8 w-8 items-center justify-center rounded-[6px] border border-borderline bg-surface text-textmain transition-colors duration-150 hover:bg-neutral-bg disabled:cursor-not-allowed disabled:bg-pillsubtle disabled:text-border-subtle disabled:opacity-60"
+          className="flex h-[30px] w-[30px] items-center justify-center rounded-[6px] border border-borderline bg-surface text-textmain transition-colors duration-150 hover:bg-neutral-bg disabled:cursor-not-allowed disabled:bg-pillsubtle disabled:text-border-subtle disabled:opacity-60"
         >
           <span className="material-symbols-outlined text-[18px]">chevron_right</span>
         </button>

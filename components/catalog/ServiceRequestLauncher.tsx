@@ -236,41 +236,42 @@ export default function ServiceRequestLauncher({
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-[520px] overflow-hidden rounded-[10px] border border-borderline bg-surface shadow-2xl [box-shadow:0_6px_20px_rgba(15,23,42,0.12)]"
+            className="flex max-h-[calc(100vh-2rem)] w-full max-w-[470px] flex-col overflow-hidden rounded-[10px] border border-borderline bg-surface shadow-2xl [box-shadow:0_6px_20px_rgba(15,23,42,0.12)]"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="flex items-start justify-between border-b border-borderline px-6 pt-[20px] pb-4">
+            <div className="flex flex-none items-start justify-between border-b border-borderline px-[18px] pt-[18px] pb-3.5">
               <div>
-                <h2 className="font-headline text-[20px] leading-snug font-bold text-textmain">
+                <h2 className="font-headline text-[17px] leading-snug font-bold text-textmain">
                   Form Permintaan Layanan
                 </h2>
-                <p className="mt-1 text-sm text-textmuted">
+                <p className="mt-1 text-[12px] text-textmuted">
                   Hubungi unit usaha BPU langsung untuk pengajuan layanan
                   khusus.
                 </p>
               </div>
 
-              <button
-                type="button"
-                aria-label="Tutup dialog"
-                onClick={() => setOpen(false)}
-                className="flex items-center justify-center rounded-md p-1.5 text-textmuted transition-colors hover:bg-pillsubtle hover:text-textmain"
-              >
-                <span className="material-symbols-outlined text-[20px]">
-                  close
-                </span>
-              </button>
-            </div>
+                <button
+                  type="button"
+                  aria-label="Tutup dialog"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center justify-center rounded-md p-1 text-textmuted transition-colors hover:bg-pillsubtle hover:text-textmain"
+                >
+                  <span className="material-symbols-outlined text-[18px]">
+                    close
+                  </span>
+                </button>
+              </div>
 
-            <form className="space-y-4 p-6 font-body" onSubmit={handleSubmit}>
-              {generalError ? (
-                <div className="rounded-[6px] border border-rose-200 bg-rose-50 px-3 py-2 text-[12px] font-medium text-rose-700">
-                  {generalError}
-                </div>
-              ) : null}
+            <form className="flex min-h-0 flex-1 flex-col font-body" onSubmit={handleSubmit}>
+              <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-4">
+                {generalError ? (
+                  <div className="rounded-[6px] border border-rose-200 bg-rose-50 px-3 py-2 text-[11px] font-medium text-rose-700">
+                    {generalError}
+                  </div>
+                ) : null}
 
-              <div>
-                <label htmlFor={`${formTitleId}-customer-name`} className="mb-1.5 block text-sm font-bold text-textmain">
+                <div>
+                <label htmlFor={`${formTitleId}-customer-name`} className="mb-1 block text-[12px] font-bold text-textmain">
                   Nama Pemohon <span className="font-bold text-rose-500">*</span>
                 </label>
                 <input
@@ -280,21 +281,21 @@ export default function ServiceRequestLauncher({
                   placeholder="Masukkan nama pemohon"
                   value={values.customer_name}
                   onChange={handleChange}
-                  className={`h-10 w-full rounded-[6px] bg-white px-3 text-sm text-textmain transition-all focus:outline-none ${
+                  className={`h-[34px] w-full rounded-[6px] bg-white px-3 text-[12px] text-textmain transition-all focus:outline-none ${
                     errors.customer_name
                       ? "border border-rose-600 focus:border-rose-600 focus:ring-1 focus:ring-rose-600"
                       : "border border-border-subtle focus:border-primary focus:ring-1 focus:ring-primary"
                   }`}
                 />
                 {errors.customer_name ? (
-                  <p className="mt-1 text-[12px] text-rose-600">
+                  <p className="mt-1 text-[11px] text-rose-600">
                     {errors.customer_name}
                   </p>
                 ) : null}
-              </div>
+                </div>
 
-              <div>
-                <label htmlFor={`${formTitleId}-customer-email`} className="mb-1.5 block text-sm font-bold text-textmain">
+                <div>
+                <label htmlFor={`${formTitleId}-customer-email`} className="mb-1 block text-[12px] font-bold text-textmain">
                   Email <span className="font-bold text-rose-500">*</span>
                 </label>
                 <input
@@ -304,19 +305,21 @@ export default function ServiceRequestLauncher({
                   placeholder="nama@email.com"
                   value={values.customer_email}
                   onChange={handleChange}
-                  className={`h-10 w-full rounded-[6px] bg-white px-3 text-sm text-textmain transition-all focus:outline-none ${
+                  className={`h-[34px] w-full rounded-[6px] bg-white px-3 text-[12px] text-textmain transition-all focus:outline-none ${
                     errors.customer_email
                       ? "border border-rose-600 focus:border-rose-600 focus:ring-1 focus:ring-rose-600"
                       : "border border-border-subtle focus:border-primary focus:ring-1 focus:ring-primary"
                   }`}
                 />
-                <p className={`mt-1 text-[12px] ${errors.customer_email ? "text-rose-600" : "text-textmuted"}`}>
-                  {errors.customer_email ?? "Gunakan email aktif atau email kampus"}
-                </p>
-              </div>
+                <div className="mt-1 text-[11px]">
+                  <p className={errors.customer_email ? "text-rose-600" : "text-textmuted"}>
+                    {errors.customer_email ?? "Gunakan email aktif atau email kampus"}
+                  </p>
+                </div>
+                </div>
 
-              <div>
-                <label htmlFor={`${formTitleId}-customer-phone`} className="mb-1.5 block text-sm font-bold text-textmain">
+                <div>
+                <label htmlFor={`${formTitleId}-customer-phone`} className="mb-1 block text-[12px] font-bold text-textmain">
                   Nomor Telepon / WhatsApp{" "}
                   <span className="font-bold text-rose-500">*</span>
                 </label>
@@ -327,21 +330,21 @@ export default function ServiceRequestLauncher({
                   placeholder="08xxxxxxxxxx"
                   value={values.customer_phone}
                   onChange={handleChange}
-                  className={`h-10 w-full rounded-[6px] bg-white px-3 text-sm text-textmain transition-all focus:outline-none ${
+                  className={`h-[34px] w-full rounded-[6px] bg-white px-3 text-[12px] text-textmain transition-all focus:outline-none ${
                     errors.customer_phone
                       ? "border border-rose-600 focus:border-rose-600 focus:ring-1 focus:ring-rose-600"
                       : "border border-border-subtle focus:border-primary focus:ring-1 focus:ring-primary"
                   }`}
                 />
                 {errors.customer_phone ? (
-                  <p className="mt-1 text-[12px] text-rose-600">
+                  <p className="mt-1 text-[11px] text-rose-600">
                     {errors.customer_phone}
                   </p>
                 ) : null}
-              </div>
+                </div>
 
-              <div>
-                <label htmlFor={`${formTitleId}-unit-usaha`} className="mb-1.5 block text-sm font-bold text-textmain">
+                <div>
+                <label htmlFor={`${formTitleId}-unit-usaha`} className="mb-1 block text-[12px] font-bold text-textmain">
                   Pilih Unit Usaha{" "}
                   <span className="font-bold text-rose-500">*</span>
                 </label>
@@ -351,7 +354,7 @@ export default function ServiceRequestLauncher({
                     name="unit_usaha_id"
                     value={values.unit_usaha_id}
                     onChange={handleChange}
-                    className={`h-10 w-full appearance-none cursor-pointer rounded-[6px] bg-white px-3 pr-10 text-sm text-textmain transition-all focus:outline-none ${
+                    className={`h-[34px] w-full appearance-none cursor-pointer rounded-[6px] bg-white px-3 pr-10 text-[12px] text-textmain transition-all focus:outline-none ${
                       errors.unit_usaha_id
                         ? "border border-rose-600 focus:border-rose-600 focus:ring-1 focus:ring-rose-600"
                         : "border border-border-subtle focus:border-primary focus:ring-1 focus:ring-primary"
@@ -363,19 +366,19 @@ export default function ServiceRequestLauncher({
                       </option>
                     ))}
                   </select>
-                  <span className="material-symbols-outlined pointer-events-none absolute right-3 text-[20px] text-textmuted">
+                  <span className="material-symbols-outlined pointer-events-none absolute right-3 text-[17px] text-textmuted">
                     keyboard_arrow_down
                   </span>
                 </div>
                 {errors.unit_usaha_id ? (
-                  <p className="mt-1 text-[12px] text-rose-600">
+                  <p className="mt-1 text-[11px] text-rose-600">
                     {errors.unit_usaha_id}
                   </p>
                 ) : null}
-              </div>
+                </div>
 
-              <div>
-                <label htmlFor={`${formTitleId}-title`} className="mb-1.5 block text-sm font-bold text-textmain">
+                <div>
+                <label htmlFor={`${formTitleId}-title`} className="mb-1 block text-[12px] font-bold text-textmain">
                   Judul Permintaan <span className="font-bold text-rose-500">*</span>
                 </label>
                 <input
@@ -385,19 +388,19 @@ export default function ServiceRequestLauncher({
                   placeholder="Contoh: Permintaan layanan ruang pertemuan"
                   value={values.title}
                   onChange={handleChange}
-                  className={`h-10 w-full rounded-[6px] bg-white px-3 text-sm text-textmain transition-all focus:outline-none ${
+                  className={`h-[34px] w-full rounded-[6px] bg-white px-3 text-[12px] text-textmain transition-all focus:outline-none ${
                     errors.title
                       ? "border border-rose-600 focus:border-rose-600 focus:ring-1 focus:ring-rose-600"
                       : "border border-border-subtle focus:border-primary focus:ring-1 focus:ring-primary"
                   }`}
                 />
                 {errors.title ? (
-                  <p className="mt-1 text-[12px] text-rose-600">{errors.title}</p>
+                  <p className="mt-1 text-[11px] text-rose-600">{errors.title}</p>
                 ) : null}
-              </div>
+                </div>
 
-              <div>
-                <label htmlFor={`${formTitleId}-description`} className="mb-1.5 block text-sm font-bold text-textmain">
+                <div>
+                <label htmlFor={`${formTitleId}-description`} className="mb-1 block text-[12px] font-bold text-textmain">
                   Detail Permintaan <span className="font-bold text-rose-500">*</span>
                 </label>
                 <textarea
@@ -407,31 +410,32 @@ export default function ServiceRequestLauncher({
                   placeholder="Tuliskan rincian kebutuhan atau catatan khusus..."
                   value={values.description}
                   onChange={handleChange}
-                  className={`h-[90px] w-full resize-none rounded-[6px] bg-white p-3 text-sm text-textmain transition-all focus:outline-none ${
+                  className={`h-[74px] w-full resize-none rounded-[6px] bg-white p-3 text-[12px] text-textmain transition-all focus:outline-none ${
                     errors.description
                       ? "border border-rose-600 focus:border-rose-600 focus:ring-1 focus:ring-rose-600"
                       : "border border-border-subtle focus:border-primary focus:ring-1 focus:ring-primary"
                   }`}
                 />
                 {errors.description ? (
-                  <p className="mt-1 text-[12px] text-rose-600">
+                  <p className="mt-1 text-[11px] text-rose-600">
                     {errors.description}
                   </p>
                 ) : null}
+                </div>
               </div>
 
-              <div className="mt-2 -mx-6 -mb-1 flex items-center justify-end gap-3 border-t border-borderline px-6 pt-4">
+              <div className="mt-1 flex flex-none items-center justify-end gap-2 border-t border-borderline px-4 pt-3.5 pb-4">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="h-10 rounded-[6px] border border-border-subtle bg-transparent px-5 text-sm font-semibold whitespace-nowrap text-textmain transition-colors hover:bg-slate-100"
+                  className="h-8 rounded-[6px] border border-border-subtle bg-transparent px-3.5 text-[12px] font-semibold whitespace-nowrap text-textmain transition-colors hover:bg-slate-100"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex h-10 items-center justify-center gap-1.5 rounded-[6px] bg-primary px-5 text-sm font-bold whitespace-nowrap text-white shadow-sm transition-colors hover:bg-[#162e5b]"
+                  className="flex h-8 items-center justify-center gap-1 rounded-[6px] bg-primary px-3.5 text-[12px] font-bold whitespace-nowrap text-white shadow-sm transition-colors hover:bg-[#162e5b]"
                 >
                   {isSubmitting ? "Mengirim..." : "Kirim Permintaan"}
                 </button>

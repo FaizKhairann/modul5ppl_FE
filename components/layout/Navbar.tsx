@@ -1,7 +1,7 @@
 export function Navbar() {
   return (
     <header className="fixed top-0 right-0 left-0 z-50 h-14 border-b border-borderline bg-surface">
-      <div className="mx-auto flex h-full max-w-[1280px] items-center justify-between gap-4 px-6">
+      <div className="mx-auto flex h-full w-full max-w-[1440px] items-center justify-between gap-4 px-4 sm:px-6 xl:px-8">
         {/* Logo + judul */}
         <div className="flex shrink-0 items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white shadow-sm">
@@ -30,10 +30,6 @@ export function Navbar() {
               placeholder="Cari produk atau unit usaha..."
               className="h-10 w-full rounded-[6px] border border-border-subtle bg-surface pr-4 pl-9 text-[14px] text-textmain placeholder-textmuted transition-all duration-150 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
             />
-
-            <div className="pointer-events-none absolute right-2.5 rounded border border-borderline bg-pillsubtle px-1.5 py-0.5 text-[11px] font-medium text-textmuted">
-              ⌘K
-            </div>
           </div>
         </div>
 

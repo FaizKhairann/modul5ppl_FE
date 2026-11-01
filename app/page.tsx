@@ -47,10 +47,10 @@ export default async function Home({ searchParams }: Props) {
     <>
       <Navbar />
 
-      <main className="mx-auto max-w-[1280px] px-6 pt-[80px] pb-12">
+      <main className="mx-auto w-full max-w-[1440px] px-4 pt-[80px] pb-12 sm:px-6 xl:px-8">
         <section className="mb-6">
-          <div className="rounded-[10px] border border-borderline bg-surface p-5">
-            <div className="flex flex-col justify-between gap-3 md:flex-row md:items-center">
+          <div className="rounded-[10px] border border-borderline bg-surface p-[18px] sm:p-5">
+            <div className="flex flex-col justify-between gap-2.5 md:flex-row md:items-center">
               <div>
                 <div className="mb-1 flex items-center gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-badgeblue px-2.5 py-0.5 text-[11px] font-semibold text-primary">
@@ -63,18 +63,18 @@ export default async function Home({ searchParams }: Props) {
                   </span>
                 </div>
 
-                <h1 className="font-headline text-[24px] leading-snug font-bold text-textmain">
+                <h1 className="font-headline text-[22px] leading-snug font-bold text-textmain sm:text-[24px]">
                   Katalog Produk & Jasa BPU
                 </h1>
 
-                <p className="mt-0.5 text-[14px] text-textmuted">
+                <p className="mt-0.5 text-[13px] text-textmuted sm:text-[14px]">
                   Jelajahi layanan dan produk resmi dari unit usaha BPU
                   Universitas Pasundan.
                 </p>
               </div>
 
               <div className="flex shrink-0 items-center gap-3">
-                <div className="flex items-center gap-3 rounded-lg border border-borderline bg-neutral-bg px-3.5 py-2">
+                <div className="flex items-center gap-3 rounded-lg border border-borderline bg-neutral-bg px-3 py-1.5 sm:px-3.5 sm:py-2">
                   <div className="text-left">
                     <div className="text-[11px] font-medium tracking-wider text-textmuted uppercase">
                       Total Item Aktif
@@ -92,7 +92,7 @@ export default async function Home({ searchParams }: Props) {
 
             <UnitFilter businessUnits={businessUnits} activeUnitId={unitId} />
 
-            <div className="mt-4 text-[13px] text-textmuted">
+            <div className="mt-3 text-[12px] text-textmuted sm:text-[13px]">
               Menampilkan katalog dari {businessUnits.length} unit usaha aktif.
             </div>
           </div>
@@ -104,7 +104,7 @@ export default async function Home({ searchParams }: Props) {
           </div>
         ) : (
           <>
-            <section className="grid min-h-[320px] grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <section className="grid min-h-[320px] grid-cols-1 gap-3.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {products.map((product) => (
                 <ProductCard
                   key={product.id}
