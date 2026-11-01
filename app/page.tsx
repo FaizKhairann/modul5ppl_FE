@@ -1,7 +1,11 @@
+import EmptyState from "@/components/catalog/EmptyState";
 import { ProductCard } from "@/components/catalog/ProductCard";
+import Pagination from "@/components/catalog/Pagination";
 import UnitFilter from "@/components/catalog/UnitFilter";
 import { Navbar } from "@/components/layout/Navbar";
 import { getBusinessUnits, getProducts } from "@/lib/api/catalog";
+
+const PRODUCTS_PER_PAGE = 8;
 
 interface Props {
   searchParams?:
@@ -28,11 +32,14 @@ export default async function Home({ searchParams }: Props) {
 
   const [businessUnits, productList] = await Promise.all([
     getBusinessUnits(),
-    getProducts({ per_page: 12, unit_usaha_id: unitId, page }),
+    // shortcut: pakai 8 item per halaman agar sesuai prototype UI/UX saat ini.
+    getProducts({ per_page: PRODUCTS_PER_PAGE, unit_usaha_id: unitId, page }),
   ]);
 
-  const totalProducts = productList.meta?.total ?? productList.products.length;
+  const products = Array.isArray(productList.products) ? productList.products : [];
+  const totalProducts = productList.meta?.total ?? products.length;
   const unitById = new Map(businessUnits.map((unit) => [unit.id, unit.name]));
+  const isEmpty = products.length === 0;
 
   return (
     <>
@@ -89,15 +96,28 @@ export default async function Home({ searchParams }: Props) {
           </div>
         </section>
 
-        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {productList.products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              unitName={unitById.get(product.unit_usaha_id) ?? "Unit Usaha BPU"}
+        {isEmpty ? (
+          <EmptyState />
+        ) : (
+          <>
+            <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  unitName={unitById.get(product.unit_usaha_id) ?? "Unit Usaha BPU"}
+                />
+              ))}
+            </section>
+
+            <Pagination
+              page={page}
+              perPage={PRODUCTS_PER_PAGE}
+              totalItems={totalProducts}
+              totalPages={productList.meta?.total_pages ?? 1}
             />
-          ))}
-        </section>
+          </>
+        )}
       </main>
     </>
   );
