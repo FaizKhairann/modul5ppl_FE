@@ -4,17 +4,24 @@ import { Navbar } from "@/components/layout/Navbar";
 import { getBusinessUnits, getProducts } from "@/lib/api/catalog";
 
 interface Props {
-  searchParams?: { [key: string]: string | string[] | undefined };
+  searchParams?:
+    | { [key: string]: string | string[] | undefined }
+    | Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export default async function Home({ searchParams }: Props) {
-  const unitParam = Array.isArray(searchParams?.unit_usaha_id)
-    ? searchParams?.unit_usaha_id[0]
-    : searchParams?.unit_usaha_id;
+  const resolvedSearchParams =
+    searchParams && typeof searchParams === "object" && "then" in searchParams
+      ? await searchParams
+      : (searchParams ?? {});
 
-  const pageParam = Array.isArray(searchParams?.page)
-    ? searchParams?.page[0]
-    : searchParams?.page;
+  const unitParam = Array.isArray(resolvedSearchParams.unit_usaha_id)
+    ? resolvedSearchParams.unit_usaha_id[0]
+    : resolvedSearchParams.unit_usaha_id;
+
+  const pageParam = Array.isArray(resolvedSearchParams.page)
+    ? resolvedSearchParams.page[0]
+    : resolvedSearchParams.page;
 
   const unitId = unitParam ? Number(unitParam) : undefined;
   const page = pageParam ? Number(pageParam) : 1;
