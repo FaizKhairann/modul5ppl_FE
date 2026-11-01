@@ -27,8 +27,11 @@ export default function UnitFilter({ businessUnits, activeUnitId }: UnitFilterPr
   }
 
   return (
-    <div className="mt-4 flex flex-wrap items-center gap-2">
-      <span className="text-[12px] font-semibold text-textmuted uppercase tracking-wider mr-1">Unit:</span>
+    <div className="mt-4 border-t border-borderline/60 pt-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="mr-1 text-[12px] font-semibold tracking-wider text-textmuted uppercase">
+          Unit:
+        </span>
       <button
         onClick={() => setUnit(undefined)}
         className={`h-8 px-4 rounded-full text-[13px] font-semibold transition-all duration-150 ${
@@ -49,6 +52,7 @@ export default function UnitFilter({ businessUnits, activeUnitId }: UnitFilterPr
           {unit.name}
         </button>
       ))}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import EmptyState from "@/components/catalog/EmptyState";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import Pagination from "@/components/catalog/Pagination";
+import ServiceRequestLauncher from "@/components/catalog/ServiceRequestLauncher";
 import UnitFilter from "@/components/catalog/UnitFilter";
 import { Navbar } from "@/components/layout/Navbar";
 import { getBusinessUnits, getProducts } from "@/lib/api/catalog";
@@ -40,12 +41,13 @@ export default async function Home({ searchParams }: Props) {
   const totalProducts = productList.meta?.total ?? products.length;
   const unitById = new Map(businessUnits.map((unit) => [unit.id, unit.name]));
   const isEmpty = products.length === 0;
+  const totalPages = productList.meta?.total_pages ?? 1;
 
   return (
     <>
       <Navbar />
 
-      <main className="mx-auto max-w-[1280px] px-6 pt-20 pb-12">
+      <main className="mx-auto max-w-[1280px] px-6 pt-[80px] pb-12">
         <section className="mb-6">
           <div className="rounded-[10px] border border-borderline bg-surface p-5">
             <div className="flex flex-col justify-between gap-3 md:flex-row md:items-center">
@@ -90,17 +92,19 @@ export default async function Home({ searchParams }: Props) {
 
             <UnitFilter businessUnits={businessUnits} activeUnitId={unitId} />
 
-            <div className="mt-4 border-t border-borderline/60 pt-4 text-[13px] text-textmuted">
+            <div className="mt-4 text-[13px] text-textmuted">
               Menampilkan katalog dari {businessUnits.length} unit usaha aktif.
             </div>
           </div>
         </section>
 
         {isEmpty ? (
-          <EmptyState />
+          <div className="min-h-[440px]">
+            <EmptyState />
+          </div>
         ) : (
           <>
-            <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <section className="grid min-h-[320px] grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {products.map((product) => (
                 <ProductCard
                   key={product.id}
@@ -114,10 +118,20 @@ export default async function Home({ searchParams }: Props) {
               page={page}
               perPage={PRODUCTS_PER_PAGE}
               totalItems={totalProducts}
-              totalPages={productList.meta?.total_pages ?? 1}
+              totalPages={totalPages}
             />
           </>
         )}
+
+        <footer className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-borderline pt-6 text-[12px] text-textmuted sm:flex-row">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            <span>Sistem Operasional Berjalan Normal • v2.4.0 ERP Core</span>
+          </div>
+          <div>© 2026 Badan Pengelola Usaha (BPU) Universitas Pasundan • Sistem Katalog Terpadu</div>
+        </footer>
+
+        <ServiceRequestLauncher businessUnits={businessUnits} />
       </main>
     </>
   );

@@ -30,6 +30,10 @@ export function Navbar() {
               placeholder="Cari produk atau unit usaha..."
               className="h-10 w-full rounded-[6px] border border-border-subtle bg-surface pr-4 pl-9 text-[14px] text-textmain placeholder-textmuted transition-all duration-150 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
             />
+
+            <div className="pointer-events-none absolute right-2.5 rounded border border-borderline bg-pillsubtle px-1.5 py-0.5 text-[11px] font-medium text-textmuted">
+              ⌘K
+            </div>
           </div>
         </div>
 

@@ -24,6 +24,11 @@ body {
   font-family: var(--font-body);
 }
 
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
 .material-symbols-outlined {
   font-variation-settings:
     "FILL" 0,
@@ -46,4 +51,36 @@ body {
 }
 .text-pillactive {
   color: #ffffff !important;
+}
+
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toast-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+.toast-enter {
+  animation: toast-enter 160ms ease-out;
+}
+
+.toast-exit {
+  animation: toast-exit 180ms ease-in forwards;
 }
