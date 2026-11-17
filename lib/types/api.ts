@@ -11,6 +11,7 @@ export interface ApiSuccess<T> {
   success: true;
   data: T;
   meta?: ApiMeta;
+  message?: string;
 }
 
 export interface ApiError {
@@ -26,19 +27,32 @@ export interface BusinessUnit {
   id: number;
   name: string;
   category: string;
-  division: string;
-  description: string;
-  is_active: boolean;
+  division?: string;
+  description?: string;
+  is_active?: boolean;
+}
+
+export interface TaxRate {
+  id: string;
+  name: string;
+  rate: string;
 }
 
 export interface Product {
-  id: number;
+  id: string;
+  sku: string;
   name: string;
-  category: string;
-  unit_usaha_id: number;
-  price: number;
   description: string;
+  type: "PRODUCT" | "SERVICE" | string;
+  unit: string;
+  stock: number;
+  price: number | string;
+  tax_rate_id?: string;
   is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+  partner_id?: string;
+  tax_rates?: TaxRate;
 }
 
 export interface CatalogOverview {
@@ -46,14 +60,24 @@ export interface CatalogOverview {
   products: Product[];
 }
 
+export interface CatalogFilters {
+  categories: string[];
+  types: string[];
+  business_units: BusinessUnit[];
+  price_range: {
+    min: number;
+    max: number;
+  };
+}
+
 export interface CartItem {
   id: number;
-  product_id: number;
-  name: string;
-  unit_usaha_id: number;
-  price: number;
+  product_id: string;
+  product_name: string;
+  unit_price: number;
   qty: number;
   subtotal: number;
+  is_active: boolean;
 }
 
 export interface Cart {
@@ -67,7 +91,7 @@ export interface Cart {
 
 export interface CreateServiceRequest {
   unit_usaha_id: number;
-  service_id?: number;
+  service_id?: string;
   customer_name: string;
   customer_email: string;
   customer_phone: string;

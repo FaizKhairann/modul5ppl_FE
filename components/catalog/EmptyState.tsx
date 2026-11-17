@@ -3,11 +3,13 @@ import Link from "next/link";
 interface EmptyStateProps {
   title?: string;
   description?: string;
+  actionLabel?: string;
 }
 
 export default function EmptyState({
   title = "Produk tidak ditemukan",
   description = "Tidak ada produk yang cocok dengan filter saat ini. Coba pilih unit lain atau tampilkan semua produk.",
+  actionLabel = "Tampilkan Semua Unit",
 }: EmptyStateProps) {
   return (
     <section
@@ -32,7 +34,7 @@ export default function EmptyState({
           href="/"
           className="inline-flex h-10 items-center justify-center rounded-[6px] bg-primary px-5 font-body text-[14px] font-bold text-white transition-colors duration-150 hover:bg-[#162e5b]"
         >
-          Tampilkan Semua Unit
+          {actionLabel}
         </Link>
       </div>
     </section>

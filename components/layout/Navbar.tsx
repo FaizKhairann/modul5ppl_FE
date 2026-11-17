@@ -1,4 +1,10 @@
-export function Navbar() {
+import CatalogSearch from "@/components/catalog/CatalogSearch";
+
+interface NavbarProps {
+  initialQuery?: string;
+}
+
+export function Navbar({ initialQuery }: NavbarProps) {
   return (
     <header className="fixed top-0 right-0 left-0 z-50 h-14 border-b border-borderline bg-surface">
       <div className="mx-auto flex h-full w-full max-w-[1440px] items-center justify-between gap-4 px-4 sm:px-6 xl:px-8">
@@ -19,18 +25,8 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Search (statis untuk sekarang) */}
         <div className="mx-auto w-full max-w-[480px]">
-          <div className="relative flex w-full items-center">
-            <span className="material-symbols-outlined pointer-events-none absolute left-3 text-[19px] text-textmuted">
-              search
-            </span>
-            <input
-              type="text"
-              placeholder="Cari produk atau unit usaha..."
-              className="h-10 w-full rounded-[6px] border border-border-subtle bg-surface pr-4 pl-9 text-[14px] text-textmain placeholder-textmuted transition-all duration-150 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
-            />
-          </div>
+          <CatalogSearch initialQuery={initialQuery} />
         </div>
 
         {/* Keranjang + profil */}

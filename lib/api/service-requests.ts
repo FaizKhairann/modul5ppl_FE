@@ -8,6 +8,7 @@ import type { ApiSuccess, CreateServiceRequest } from "@/lib/types/api";
 export interface ServiceRequestItem {
   id: number;
   unit_usaha_id: number;
+  service_id?: string;
   customer_name: string;
   customer_email: string;
   customer_phone: string;

@@ -1,10 +1,11 @@
 import EmptyState from "@/components/catalog/EmptyState";
+import CategoryFilter from "@/components/catalog/CategoryFilter";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import Pagination from "@/components/catalog/Pagination";
 import ServiceRequestLauncher from "@/components/catalog/ServiceRequestLauncher";
 import UnitFilter from "@/components/catalog/UnitFilter";
 import { Navbar } from "@/components/layout/Navbar";
-import { getBusinessUnits, getProducts } from "@/lib/api/catalog";
+import { getFilters, getProducts } from "@/lib/api/catalog";
 
 const PRODUCTS_PER_PAGE = 8;
 
@@ -20,32 +21,59 @@ export default async function Home({ searchParams }: Props) {
       ? await searchParams
       : (searchParams ?? {});
 
-  const unitParam = Array.isArray(resolvedSearchParams.unit_usaha_id)
-    ? resolvedSearchParams.unit_usaha_id[0]
-    : resolvedSearchParams.unit_usaha_id;
-
   const pageParam = Array.isArray(resolvedSearchParams.page)
     ? resolvedSearchParams.page[0]
     : resolvedSearchParams.page;
 
-  const unitId = unitParam ? Number(unitParam) : undefined;
-  const page = pageParam ? Number(pageParam) : 1;
+  const queryParam = Array.isArray(resolvedSearchParams.q)
+    ? resolvedSearchParams.q[0]
+    : resolvedSearchParams.q;
 
-  const [businessUnits, productList] = await Promise.all([
-    getBusinessUnits(),
+  const categoryParam = Array.isArray(resolvedSearchParams.category)
+    ? resolvedSearchParams.category[0]
+    : resolvedSearchParams.category;
+
+  const page = pageParam ? Number(pageParam) : 1;
+  const query = queryParam?.trim() || undefined;
+  const categoryQuery = categoryParam?.trim() || undefined;
+
+  const [filters, productList] = await Promise.all([
+    getFilters(),
     // shortcut: pakai 8 item per halaman agar sesuai prototype UI/UX saat ini.
-    getProducts({ per_page: PRODUCTS_PER_PAGE, unit_usaha_id: unitId, page }),
+    getProducts({
+      per_page: PRODUCTS_PER_PAGE,
+      q: query,
+      category: categoryQuery,
+      page,
+    }),
   ]);
 
+  const businessUnits = filters.business_units;
   const products = Array.isArray(productList.products) ? productList.products : [];
   const totalProducts = productList.meta?.total ?? products.length;
-  const unitById = new Map(businessUnits.map((unit) => [unit.id, unit.name]));
+  const categories = filters.categories ?? [];
+  const activeCategory = categoryQuery
+    ? categories.find(
+        (category) => category.toLowerCase() === categoryQuery.toLowerCase(),
+      ) ?? categoryQuery
+    : undefined;
   const isEmpty = products.length === 0;
   const totalPages = productList.meta?.total_pages ?? 1;
+  const activeFilterLabels = [
+    query ? `kata kunci "${query}"` : null,
+    activeCategory
+      ? `kategori ${activeCategory === "SERVICE" ? "Jasa" : activeCategory === "PRODUCT" ? "Produk" : activeCategory}`
+      : null,
+  ].filter(Boolean) as string[];
+
+  const emptyDescription =
+    activeFilterLabels.length > 0
+      ? `Tidak ada produk yang cocok dengan ${activeFilterLabels.join(" + ")}. Coba ubah pencarian atau reset filter untuk melihat semua produk.`
+      : undefined;
 
   return (
     <>
-      <Navbar />
+      <Navbar initialQuery={query} />
 
       <main className="mx-auto w-full max-w-[1440px] px-4 pt-[80px] pb-12 sm:px-6 xl:px-8">
         <section className="mb-6">
@@ -90,7 +118,8 @@ export default async function Home({ searchParams }: Props) {
               </div>
             </div>
 
-            <UnitFilter businessUnits={businessUnits} activeUnitId={unitId} />
+            <UnitFilter businessUnits={businessUnits} />
+            <CategoryFilter categories={categories} activeCategory={activeCategory} />
 
             <div className="mt-3 text-[12px] text-textmuted sm:text-[13px]">
               Menampilkan katalog dari {businessUnits.length} unit usaha aktif.
@@ -100,17 +129,17 @@ export default async function Home({ searchParams }: Props) {
 
         {isEmpty ? (
           <div className="min-h-[440px]">
-            <EmptyState />
+            <EmptyState
+              title={productList.message ?? undefined}
+              description={emptyDescription}
+              actionLabel={activeFilterLabels.length > 0 ? "Reset Pencarian & Filter" : undefined}
+            />
           </div>
         ) : (
           <>
             <section className="grid min-h-[320px] grid-cols-1 gap-3.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {products.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  unitName={unitById.get(product.unit_usaha_id) ?? "Unit Usaha BPU"}
-                />
+                <ProductCard key={product.id} product={product} />
               ))}
             </section>
 

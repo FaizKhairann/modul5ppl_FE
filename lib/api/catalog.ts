@@ -3,6 +3,7 @@ import type {
   ApiSuccess,
   ApiMeta,
   BusinessUnit,
+  CatalogFilters,
   CatalogOverview,
   Product,
 } from "@/lib/types/api";
@@ -20,10 +21,19 @@ export async function getBusinessUnits(): Promise<BusinessUnit[]> {
   return res.data.data;
 }
 
+export async function getFilters(): Promise<CatalogFilters> {
+  const res = await apiClient.get<ApiSuccess<CatalogFilters>>("/catalog/filters");
+  return res.data.data;
+}
+
 export interface ProductQuery {
   q?: string;
   unit_usaha_id?: number;
   category?: string;
+  type?: string;
+  sort?: string;
+  min_price?: number;
+  max_price?: number;
   page?: number;
   per_page?: number;
 }
@@ -31,6 +41,7 @@ export interface ProductQuery {
 export interface ProductList {
   products: Product[];
   meta?: ApiMeta;
+  message?: string;
 }
 
 export async function getProducts(
@@ -39,10 +50,14 @@ export async function getProducts(
   const res = await apiClient.get<ApiSuccess<Product[]>>("/catalog/products", {
     params,
   });
-  return { products: res.data.data, meta: res.data.meta };
+  return {
+    products: res.data.data,
+    meta: res.data.meta,
+    message: res.data.message,
+  };
 }
 
-export async function getProduct(id: number): Promise<Product> {
+export async function getProduct(id: string): Promise<Product> {
   const res = await apiClient.get<ApiSuccess<Product>>(
     `/catalog/products/${id}`,
   );

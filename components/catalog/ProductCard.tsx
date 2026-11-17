@@ -5,14 +5,22 @@ import type { Product } from "@/lib/types/api";
 
 const rupiahFormatter = new Intl.NumberFormat("id-ID");
 
-interface ProductCardProps {
-  product: Product;
-  unitName: string;
+function formatPrice(price: Product["price"]) {
+  return `Rp ${rupiahFormatter.format(Number(price))}`;
 }
 
-export function ProductCard({ product, unitName }: ProductCardProps) {
+function getTypeLabel(type: Product["type"]) {
+  return type === "SERVICE" ? "Jasa" : "Produk";
+}
+
+interface ProductCardProps {
+  product: Product;
+}
+
+export function ProductCard({ product }: ProductCardProps) {
   const [detailOpen, setDetailOpen] = useState(false);
   const [qty, setQty] = useState(1);
+  const typeLabel = getTypeLabel(product.type);
 
   useEffect(() => {
     if (!detailOpen) {
@@ -50,7 +58,7 @@ export function ProductCard({ product, unitName }: ProductCardProps) {
 
           <div className="mb-1">
             <span className="inline-block rounded-full bg-badgeblue px-2 py-[3px] font-headline text-[10px] leading-none font-bold text-primary">
-              {unitName}
+              {typeLabel}
             </span>
           </div>
 
@@ -62,8 +70,12 @@ export function ProductCard({ product, unitName }: ProductCardProps) {
           </h2>
 
           <div className="font-body text-[14px] font-bold text-primary">
-            Rp {rupiahFormatter.format(product.price)}
+            {formatPrice(product.price)}
           </div>
+
+          <p className="mt-1 text-[11px] text-textmuted">
+            {product.unit} • Stok {product.stock}
+          </p>
         </div>
 
         <div className="mt-2 flex items-center gap-1.5 border-t border-borderline/40 pt-1.5">
@@ -98,7 +110,7 @@ export function ProductCard({ product, unitName }: ProductCardProps) {
           >
             <div className="mb-3.5 flex items-center justify-between">
               <span className="inline-block rounded-full bg-badgeblue px-2.5 py-[3px] font-headline text-[10px] leading-none font-bold text-primary">
-                {unitName}
+                {typeLabel}
               </span>
               <button
                 type="button"
@@ -129,7 +141,7 @@ export function ProductCard({ product, unitName }: ProductCardProps) {
 
                 <div className="flex items-center gap-2">
                   <div className="font-body text-[15px] font-bold text-primary">
-                    Rp {rupiahFormatter.format(product.price)}
+                    {formatPrice(product.price)}
                   </div>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
@@ -145,25 +157,37 @@ export function ProductCard({ product, unitName }: ProductCardProps) {
                   <div>
                     <span className="text-border-subtle">Kategori:</span>{" "}
                     <span className="font-semibold text-textmain">
-                      {product.category}
+                      {typeLabel}
                     </span>
                   </div>
                   <div>
-                    <span className="text-border-subtle">ID Produk:</span>{" "}
+                    <span className="text-border-subtle">SKU:</span>{" "}
                     <span className="font-semibold text-textmain">
-                      #{product.id}
+                      {product.sku}
                     </span>
                   </div>
                   <div>
-                    <span className="text-border-subtle">Unit:</span>{" "}
+                    <span className="text-border-subtle">Satuan:</span>{" "}
                     <span className="font-semibold text-textmain">
-                      {unitName}
+                      {product.unit}
                     </span>
                   </div>
                   <div>
                     <span className="text-border-subtle">Status:</span>{" "}
                     <span className="font-semibold text-textmain">
                       {product.is_active ? "Aktif" : "Nonaktif"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-border-subtle">Stok:</span>{" "}
+                    <span className="font-semibold text-textmain">
+                      {product.stock}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-border-subtle">Pajak:</span>{" "}
+                    <span className="font-semibold text-textmain">
+                      {product.tax_rates?.name ?? "-"}
                     </span>
                   </div>
                 </div>
