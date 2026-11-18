@@ -44,7 +44,7 @@ export default function Pagination({
           aria-label="Halaman Sebelumnya"
           disabled={page === 1}
           onClick={() => goToPage(page - 1)}
-          className="flex h-[30px] w-[30px] items-center justify-center rounded-[6px] border border-borderline bg-surface text-textmain transition-colors duration-150 hover:bg-neutral-bg disabled:cursor-not-allowed disabled:bg-pillsubtle disabled:text-border-subtle disabled:opacity-60"
+          className="interactive press flex h-[30px] w-[30px] items-center justify-center rounded-[6px] border border-borderline bg-surface text-textmain hover:bg-neutral-bg disabled:cursor-not-allowed disabled:bg-pillsubtle disabled:text-border-subtle disabled:opacity-60"
         >
           <span className="material-symbols-outlined text-[18px]">chevron_left</span>
         </button>
@@ -61,7 +61,7 @@ export default function Pagination({
               className={
                 isActive
                   ? "flex h-[30px] w-[30px] items-center justify-center rounded-[6px] bg-primary font-headline text-[12px] font-bold text-white shadow-sm"
-                  : "flex h-[30px] w-[30px] items-center justify-center rounded-[6px] border border-borderline bg-surface font-body text-[12px] font-medium text-textmain transition-colors duration-150 hover:bg-neutral-bg hover:border-primary"
+                  : "interactive press flex h-[30px] w-[30px] items-center justify-center rounded-[6px] border border-borderline bg-surface font-body text-[12px] font-medium text-textmain hover:border-primary hover:bg-neutral-bg"
               }
             >
               {pageNumber}
@@ -74,7 +74,7 @@ export default function Pagination({
           aria-label="Halaman Selanjutnya"
           disabled={page === totalPages}
           onClick={() => goToPage(page + 1)}
-          className="flex h-[30px] w-[30px] items-center justify-center rounded-[6px] border border-borderline bg-surface text-textmain transition-colors duration-150 hover:bg-neutral-bg disabled:cursor-not-allowed disabled:bg-pillsubtle disabled:text-border-subtle disabled:opacity-60"
+          className="interactive press flex h-[30px] w-[30px] items-center justify-center rounded-[6px] border border-borderline bg-surface text-textmain hover:bg-neutral-bg disabled:cursor-not-allowed disabled:bg-pillsubtle disabled:text-border-subtle disabled:opacity-60"
         >
           <span className="material-symbols-outlined text-[18px]">chevron_right</span>
         </button>

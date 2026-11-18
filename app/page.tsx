@@ -3,6 +3,7 @@ import CategoryFilter from "@/components/catalog/CategoryFilter";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import Pagination from "@/components/catalog/Pagination";
 import ServiceRequestLauncher from "@/components/catalog/ServiceRequestLauncher";
+import { ServiceRequestProvider } from "@/components/catalog/ServiceRequestProvider";
 import UnitFilter from "@/components/catalog/UnitFilter";
 import { Navbar } from "@/components/layout/Navbar";
 import { getFilters, getProducts } from "@/lib/api/catalog";
@@ -76,6 +77,7 @@ export default async function Home({ searchParams }: Props) {
       <Navbar initialQuery={query} />
 
       <main className="mx-auto w-full max-w-[1440px] px-4 pt-[80px] pb-12 sm:px-6 xl:px-8">
+        <ServiceRequestProvider>
         <section className="mb-6">
           <div className="rounded-[10px] border border-borderline bg-surface p-[18px] sm:p-5">
             <div className="flex flex-col justify-between gap-2.5 md:flex-row md:items-center">
@@ -83,7 +85,7 @@ export default async function Home({ searchParams }: Props) {
                 <div className="mb-1 flex items-center gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-badgeblue px-2.5 py-0.5 text-[11px] font-semibold text-primary">
                     <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                    Portal Resmi ERP BPU
+                    Portal Resmi ERP ARAYA
                   </span>
                   <span className="text-[12px] text-textmuted">•</span>
                   <span className="text-[12px] text-textmuted">
@@ -92,11 +94,11 @@ export default async function Home({ searchParams }: Props) {
                 </div>
 
                 <h1 className="font-headline text-[22px] leading-snug font-bold text-textmain sm:text-[24px]">
-                  Katalog Produk & Jasa BPU
+                  Katalog Produk & Jasa 
                 </h1>
 
                 <p className="mt-0.5 text-[13px] text-textmuted sm:text-[14px]">
-                  Jelajahi layanan dan produk resmi dari unit usaha BPU
+                  Jelajahi layanan dan produk resmi dari unit usaha Araya System 
                   Universitas Pasundan.
                 </p>
               </div>
@@ -127,40 +129,41 @@ export default async function Home({ searchParams }: Props) {
           </div>
         </section>
 
-        {isEmpty ? (
-          <div className="min-h-[440px]">
-            <EmptyState
-              title={productList.message ?? undefined}
-              description={emptyDescription}
-              actionLabel={activeFilterLabels.length > 0 ? "Reset Pencarian & Filter" : undefined}
-            />
-          </div>
-        ) : (
-          <>
-            <section className="grid min-h-[320px] grid-cols-1 gap-3.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </section>
+          {isEmpty ? (
+            <div className="min-h-[440px]">
+              <EmptyState
+                title={productList.message ?? undefined}
+                description={emptyDescription}
+                actionLabel={activeFilterLabels.length > 0 ? "Reset Pencarian & Filter" : undefined}
+              />
+            </div>
+          ) : (
+            <>
+              <section className="grid min-h-[320px] grid-cols-1 gap-3.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {products.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </section>
 
-            <Pagination
-              page={page}
-              perPage={PRODUCTS_PER_PAGE}
-              totalItems={totalProducts}
-              totalPages={totalPages}
-            />
-          </>
-        )}
+              <Pagination
+                page={page}
+                perPage={PRODUCTS_PER_PAGE}
+                totalItems={totalProducts}
+                totalPages={totalPages}
+              />
+            </>
+          )}
 
-        <footer className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-borderline pt-6 text-[12px] text-textmuted sm:flex-row">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            <span>Sistem Operasional Berjalan Normal • v2.4.0 ERP Core</span>
-          </div>
-          <div>© 2026 Badan Pengelola Usaha (BPU) Universitas Pasundan • Sistem Katalog Terpadu</div>
-        </footer>
+          <footer className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-borderline pt-6 text-[12px] text-textmuted sm:flex-row">
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              <span>Sistem Operasional Berjalan Normal • v2.4.0 ERP Core</span>
+            </div>
+            <div>© 2026 Araya System Universitas Pasundan</div>
+          </footer>
 
-        <ServiceRequestLauncher businessUnits={businessUnits} />
+          <ServiceRequestLauncher businessUnits={businessUnits} />
+        </ServiceRequestProvider>
       </main>
     </>
   );

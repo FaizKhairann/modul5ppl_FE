@@ -1,4 +1,5 @@
 import CatalogSearch from "@/components/catalog/CatalogSearch";
+import RegisterButton from "@/components/layout/RegisterButton";
 
 interface NavbarProps {
   initialQuery?: string;
@@ -15,9 +16,9 @@ export function Navbar({ initialQuery }: NavbarProps) {
               account_balance
             </span>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-0.5">
             <span className="font-headline text-[16px] leading-tight font-bold tracking-tight text-textmain">
-              BPU System
+              Araya System
             </span>
             <span className="text-[11px] leading-none text-textmuted">
               Universitas Pasundan
@@ -29,12 +30,12 @@ export function Navbar({ initialQuery }: NavbarProps) {
           <CatalogSearch initialQuery={initialQuery} />
         </div>
 
-        {/* Keranjang + profil */}
+        {/* Keranjang + guest */}
         <div className="flex shrink-0 items-center gap-4">
           <button
             type="button"
             aria-label="Keranjang Belanja"
-            className="relative rounded-lg p-2 text-textmain transition-colors duration-150 hover:bg-pillsubtle"
+            className="interactive press relative rounded-lg p-2 text-textmain hover:bg-pillsubtle"
           >
             <span className="material-symbols-outlined text-[22px]">
               shopping_cart
@@ -43,21 +44,24 @@ export function Navbar({ initialQuery }: NavbarProps) {
 
           <div className="h-6 w-px bg-borderline" />
 
-          <div className="flex cursor-pointer items-center gap-2.5 transition-opacity hover:opacity-90">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-xs font-bold text-white ring-2 ring-badgeblue">
-              AD
+          <div className="flex items-center gap-2.5">
+            <div className="hidden items-center gap-2.5 rounded-[10px] border border-borderline bg-neutral-bg px-2.5 py-1.5 sm:flex">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-pillsubtle text-textmuted">
+                <span className="material-symbols-outlined text-[18px]">
+                  person
+                </span>
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="font-headline text-[13px] leading-tight font-bold text-textmain">
+                  Tamu #4821
+                </span>
+                <span className="text-[11px] leading-tight text-textmuted">
+                  Mode Guest
+                </span>
+              </div>
             </div>
-            <div className="hidden flex-col text-left sm:flex">
-              <span className="font-headline text-[13px] leading-tight font-semibold text-textmain">
-                Admin BPU
-              </span>
-              <span className="text-[11px] leading-none text-textmuted">
-                Pengelola Kampus
-              </span>
-            </div>
-            <span className="material-symbols-outlined text-[18px] text-textmuted">
-              expand_more
-            </span>
+
+            <RegisterButton />
           </div>
         </div>
       </div>

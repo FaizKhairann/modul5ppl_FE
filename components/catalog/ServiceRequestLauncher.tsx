@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useId, useState } from "react";
+import { useServiceRequest } from "@/components/catalog/ServiceRequestProvider";
 import { createServiceRequest } from "@/lib/api/service-requests";
 import type { BusinessUnit, CreateServiceRequest } from "@/lib/types/api";
 
@@ -31,44 +32,34 @@ const initialValues: FormValues = {
 export default function ServiceRequestLauncher({
   businessUnits,
 }: ServiceRequestLauncherProps) {
-  const [open, setOpen] = useState(false);
+  const { isOpen, prefill, openRequest, closeRequest } = useServiceRequest();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
   const [isToastLeaving, setIsToastLeaving] = useState(false);
+  const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
   const [values, setValues] = useState<FormValues>({
     ...initialValues,
-    unit_usaha_id: businessUnits[0] ? String(businessUnits[0].id) : "",
   });
   const [errors, setErrors] = useState<FieldErrors>({});
   const [generalError, setGeneralError] = useState<string | null>(null);
   const formTitleId = useId();
 
-  const defaultUnitId = useMemo(
-    () => (businessUnits[0] ? String(businessUnits[0].id) : ""),
-    [businessUnits],
-  );
-
   function closeModal() {
-    setOpen(false);
+    closeRequest();
     setIsSubmitting(false);
     setErrors({});
     setGeneralError(null);
+    setSelectedServiceId(null);
   }
 
   function resetForm() {
-    setValues({ ...initialValues, unit_usaha_id: defaultUnitId });
+    setValues({ ...initialValues });
     setErrors({});
     setGeneralError(null);
   }
 
   function openModal() {
-    if (!open) {
-      resetForm();
-      setSubmitMessage(null);
-      setIsToastLeaving(false);
-    }
-
-    setOpen(true);
+    openRequest();
   }
 
   function validateForm(currentValues: FormValues): FieldErrors {
@@ -134,13 +125,15 @@ export default function ServiceRequestLauncher({
       customer_phone: values.customer_phone.trim(),
       title: values.title.trim(),
       description: values.description.trim(),
+      service_id: selectedServiceId ?? undefined,
     };
 
     try {
       await createServiceRequest(payload);
       setSubmitMessage("Permintaan berhasil dikirim.");
       resetForm();
-      setOpen(false);
+      closeRequest();
+      setSelectedServiceId(null);
     } catch (error) {
       const apiError = error as { message?: string; fields?: Record<string, string> };
 
@@ -163,7 +156,7 @@ export default function ServiceRequestLauncher({
   }
 
   useEffect(() => {
-    if (!open) {
+    if (!isOpen) {
       return;
     }
 
@@ -172,7 +165,11 @@ export default function ServiceRequestLauncher({
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        setOpen(false);
+        closeRequest();
+        setIsSubmitting(false);
+        setErrors({});
+        setGeneralError(null);
+        setSelectedServiceId(null);
       }
     }
 
@@ -182,7 +179,28 @@ export default function ServiceRequestLauncher({
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [open]);
+  }, [isOpen, closeRequest]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const nextValues = {
+      ...initialValues,
+      title: prefill?.title ?? "",
+    };
+    const nextServiceId = prefill?.serviceId ?? null;
+
+    queueMicrotask(() => {
+      setValues(nextValues);
+      setErrors({});
+      setGeneralError(null);
+      setSubmitMessage(null);
+      setIsToastLeaving(false);
+      setSelectedServiceId(nextServiceId);
+    });
+  }, [isOpen, prefill]);
 
   useEffect(() => {
     if (!submitMessage) {
@@ -220,7 +238,7 @@ export default function ServiceRequestLauncher({
         type="button"
         aria-label="Bantuan BPU"
         onClick={openModal}
-        className="fixed right-6 bottom-6 z-40 flex h-12 cursor-pointer items-center gap-2 rounded-full bg-primary px-5 text-white shadow-[0_8px_24px_rgba(15,23,42,0.25)] transition-all hover:bg-[#17305E] active:scale-[0.98]"
+        className="interactive press fixed right-6 bottom-6 z-40 flex h-12 cursor-pointer items-center gap-2 rounded-full bg-primary px-5 text-white shadow-[0_8px_24px_rgba(15,23,42,0.25)] hover:bg-primary-hover"
       >
         <span className="material-symbols-outlined text-[18px] text-white">
           forum
@@ -230,10 +248,10 @@ export default function ServiceRequestLauncher({
         </span>
       </button>
 
-      {open ? (
+      {isOpen ? (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-[2px]"
-          onClick={() => setOpen(false)}
+          onClick={closeModal}
         >
           <div
             className="flex max-h-[calc(100vh-2rem)] w-full max-w-[470px] flex-col overflow-hidden rounded-[10px] border border-borderline bg-surface shadow-2xl [box-shadow:0_6px_20px_rgba(15,23,42,0.12)]"
@@ -253,8 +271,8 @@ export default function ServiceRequestLauncher({
                 <button
                   type="button"
                   aria-label="Tutup dialog"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center justify-center rounded-md p-1 text-textmuted transition-colors hover:bg-pillsubtle hover:text-textmain"
+                  onClick={closeModal}
+                  className="interactive press flex items-center justify-center rounded-md p-1 text-textmuted hover:bg-pillsubtle hover:text-textmain"
                 >
                   <span className="material-symbols-outlined text-[18px]">
                     close
@@ -267,6 +285,17 @@ export default function ServiceRequestLauncher({
                 {generalError ? (
                   <div className="rounded-[6px] border border-rose-200 bg-rose-50 px-3 py-2 text-[11px] font-medium text-rose-700">
                     {generalError}
+                  </div>
+                ) : null}
+
+                {selectedServiceId ? (
+                  <div className="rounded-[8px] border border-primary/15 bg-badgeblue px-3 py-2">
+                    <div className="text-[10px] font-semibold tracking-wider text-textmuted uppercase">
+                      Layanan dipilih
+                    </div>
+                    <div className="mt-0.5 text-[12px] font-semibold text-textmain">
+                      {values.title}
+                    </div>
                   </div>
                 ) : null}
 
@@ -354,12 +383,15 @@ export default function ServiceRequestLauncher({
                     name="unit_usaha_id"
                     value={values.unit_usaha_id}
                     onChange={handleChange}
-                    className={`h-[34px] w-full appearance-none cursor-pointer rounded-[6px] bg-white px-3 pr-10 text-[12px] text-textmain transition-all focus:outline-none ${
+                    className={`interactive h-[34px] w-full appearance-none cursor-pointer rounded-[6px] bg-white px-3 pr-10 text-[12px] text-textmain focus:outline-none ${
                       errors.unit_usaha_id
                         ? "border border-rose-600 focus:border-rose-600 focus:ring-1 focus:ring-rose-600"
                         : "border border-border-subtle focus:border-primary focus:ring-1 focus:ring-primary"
                     }`}
                   >
+                    <option value="" disabled>
+                      Pilih unit usaha
+                    </option>
                     {businessUnits.map((unit) => (
                       <option key={unit.id} value={unit.id}>
                         {unit.name}
@@ -428,14 +460,14 @@ export default function ServiceRequestLauncher({
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="h-8 rounded-[6px] border border-border-subtle bg-transparent px-3.5 text-[12px] font-semibold whitespace-nowrap text-textmain transition-colors hover:bg-slate-100"
+                  className="interactive press h-8 rounded-[6px] border border-border-subtle bg-transparent px-3.5 text-[12px] font-semibold whitespace-nowrap text-textmain hover:bg-slate-100"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex h-8 items-center justify-center gap-1 rounded-[6px] bg-primary px-3.5 text-[12px] font-bold whitespace-nowrap text-white shadow-sm transition-colors hover:bg-[#162e5b]"
+                  className="interactive press flex h-8 items-center justify-center gap-1 rounded-[6px] bg-primary px-3.5 text-[12px] font-bold whitespace-nowrap text-white shadow-sm hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   {isSubmitting ? "Mengirim..." : "Kirim Permintaan"}
                 </button>

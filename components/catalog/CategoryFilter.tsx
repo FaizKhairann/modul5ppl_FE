@@ -51,7 +51,7 @@ export default function CategoryFilter({
         <button
           type="button"
           onClick={() => setCategory(undefined)}
-          className={`h-[30px] rounded-full px-3.5 text-[12px] font-semibold transition-all duration-150 ${
+          className={`interactive press h-[30px] rounded-full px-3.5 text-[12px] font-semibold ${
             activeCategory == null
               ? "bg-pillactive text-white"
               : "border border-borderline bg-pillsubtle text-textmain"
@@ -65,7 +65,7 @@ export default function CategoryFilter({
             key={category}
             type="button"
             onClick={() => setCategory(category)}
-            className={`h-[30px] rounded-full px-3.5 text-[12px] font-semibold transition-all duration-150 ${
+            className={`interactive press h-[30px] rounded-full px-3.5 text-[12px] font-semibold ${
               activeCategory?.toLowerCase() === category.toLowerCase()
                 ? "bg-pillactive text-white"
                 : "border border-borderline bg-pillsubtle text-textmain"

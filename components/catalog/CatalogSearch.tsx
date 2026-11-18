@@ -105,7 +105,7 @@ export default function CatalogSearch({ initialQuery = "" }: CatalogSearchProps)
         onChange={(event) => setQuery(event.target.value)}
         placeholder="Cari produk atau unit usaha..."
         aria-label="Cari produk atau unit usaha"
-        className="h-10 w-full rounded-[6px] border border-border-subtle bg-surface pr-10 pl-9 text-[14px] text-textmain placeholder-textmuted transition-all duration-150 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+        className="interactive h-10 w-full rounded-[6px] border border-border-subtle bg-surface pr-10 pl-9 text-[14px] text-textmain placeholder-textmuted focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
       />
 
       {query ? (
@@ -113,7 +113,7 @@ export default function CatalogSearch({ initialQuery = "" }: CatalogSearchProps)
           type="button"
           aria-label="Hapus pencarian"
           onClick={() => setQuery("")}
-          className="absolute right-2 flex h-7 w-7 items-center justify-center rounded-full text-textmuted transition-colors hover:bg-neutral-bg hover:text-textmain"
+          className="interactive press absolute right-2 flex h-7 w-7 items-center justify-center rounded-full text-textmuted hover:bg-neutral-bg hover:text-textmain"
         >
           <span className="material-symbols-outlined text-[18px]">close</span>
         </button>

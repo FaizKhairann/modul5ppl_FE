@@ -45,6 +45,27 @@ html {
   overflow: hidden;
 }
 
+.interactive {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+  transition-duration: 180ms;
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+.lift {
+  transition-property: transform, box-shadow, border-color;
+  transition-duration: 180ms;
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+.lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+}
+
+.press:active {
+  transform: scale(0.98);
+}
+
 /* Utility for active pill — project tokens provide colors; define explicit class so active pill is visible */
 .bg-pillactive {
   background-color: var(--color-primary) !important;
@@ -83,4 +104,20 @@ html {
 
 .toast-exit {
   animation: toast-exit 180ms ease-in forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interactive,
+  .lift,
+  .toast-enter,
+  .toast-exit {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .lift:hover,
+  .press:active {
+    transform: none !important;
+    box-shadow: none !important;
+  }
 }

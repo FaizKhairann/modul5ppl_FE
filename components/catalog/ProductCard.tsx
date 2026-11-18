@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useServiceRequest } from "@/components/catalog/ServiceRequestProvider";
 import type { Product } from "@/lib/types/api";
 
 const rupiahFormatter = new Intl.NumberFormat("id-ID");
@@ -18,9 +19,16 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const { openRequest } = useServiceRequest();
   const [detailOpen, setDetailOpen] = useState(false);
   const [qty, setQty] = useState(1);
   const typeLabel = getTypeLabel(product.type);
+  const isService = product.type === "SERVICE";
+
+  function openServiceForm() {
+    setDetailOpen(false);
+    openRequest({ serviceId: product.id, title: product.name });
+  }
 
   useEffect(() => {
     if (!detailOpen) {
@@ -46,7 +54,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <>
-      <article className="group flex flex-col justify-between rounded-[10px] border border-borderline bg-surface p-3 transition-all duration-150 hover:border-primary/40 hover:shadow-sm">
+      <article className="lift group flex flex-col justify-between rounded-[10px] border border-borderline bg-surface p-3 hover:border-primary/40">
         <div>
           <div className="relative mb-2 flex h-[118px] w-full items-center justify-center overflow-hidden rounded-[6px] bg-neutral-bg">
             {/* shortcut: API belum punya field gambar produk, ganti ke image asli saat BE menambahkannya */}
@@ -74,25 +82,26 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
 
           <p className="mt-1 text-[11px] text-textmuted">
-            {product.unit} • Stok {product.stock}
+            {isService ? `${product.unit} • Layanan` : `${product.unit} • Stok ${product.stock}`}
           </p>
         </div>
 
         <div className="mt-2 flex items-center gap-1.5 border-t border-borderline/40 pt-1.5">
           <button
             type="button"
-            className="flex h-[30px] flex-1 items-center justify-center gap-1 rounded-[6px] bg-primary font-body text-[11px] font-bold whitespace-nowrap text-white transition-colors duration-150 hover:bg-[#162e5b]"
+            onClick={isService ? openServiceForm : undefined}
+            className="interactive press flex h-[30px] flex-1 items-center justify-center gap-1 rounded-[6px] bg-primary font-body text-[11px] font-bold whitespace-nowrap text-white hover:bg-primary-hover"
           >
             <span className="material-symbols-outlined text-[13px]">
-              add_shopping_cart
+              {isService ? "forum" : "add_shopping_cart"}
             </span>
-            <span>+ Keranjang</span>
+            <span>{isService ? "Hubungi" : "+ Keranjang"}</span>
           </button>
 
           <button
             type="button"
             onClick={() => setDetailOpen(true)}
-            className="h-[30px] w-[60px] rounded-[6px] border border-border-subtle bg-transparent font-body text-[11px] font-semibold whitespace-nowrap text-textmain transition-colors duration-150 hover:bg-neutral-bg"
+            className="interactive press h-[30px] w-[60px] rounded-[6px] border border-border-subtle bg-transparent font-body text-[11px] font-semibold whitespace-nowrap text-textmain hover:bg-neutral-bg"
           >
             Detail
           </button>
@@ -116,7 +125,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 type="button"
                 aria-label="Tutup dialog"
                 onClick={() => setDetailOpen(false)}
-                className="flex items-center justify-center rounded-lg p-1 text-textmuted transition-colors hover:bg-slate-100 hover:text-textmain"
+                className="interactive press flex items-center justify-center rounded-lg p-1 text-textmuted hover:bg-slate-100 hover:text-textmain"
               >
                 <span className="material-symbols-outlined text-[17px]">
                   close
@@ -181,7 +190,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   <div>
                     <span className="text-border-subtle">Stok:</span>{" "}
                     <span className="font-semibold text-textmain">
-                      {product.stock}
+                      {isService ? "Layanan" : product.stock}
                     </span>
                   </div>
                   <div>
@@ -195,35 +204,48 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
 
             <div className="flex items-center justify-between gap-3 border-t border-slate-200 pt-3">
-              <div className="flex h-[30px] w-[90px] items-center justify-between rounded-[6px] border border-border-subtle bg-white px-2 text-[12px] font-semibold text-textmain">
+              {isService ? (
                 <button
                   type="button"
-                  onClick={() => setQty((current) => Math.max(1, current - 1))}
-                  className="flex h-5 w-5 select-none items-center justify-center text-[14px] font-bold text-textmuted transition-colors hover:text-textmain"
+                  onClick={openServiceForm}
+                  className="interactive press flex h-8 w-full items-center justify-center gap-1.5 rounded-[6px] bg-primary px-4 text-[12px] font-bold text-white shadow-sm hover:bg-primary-hover"
                 >
-                  -
+                  <span className="material-symbols-outlined text-[15px]">forum</span>
+                  Hubungi
                 </button>
-                <span className="select-none text-[12px] font-bold">{qty}</span>
-                <button
-                  type="button"
-                  onClick={() => setQty((current) => current + 1)}
-                  className="flex h-5 w-5 select-none items-center justify-center text-[14px] font-bold text-textmuted transition-colors hover:text-textmain"
-                >
-                  +
-                </button>
-              </div>
+              ) : (
+                <>
+                  <div className="flex h-[30px] w-[90px] items-center justify-between rounded-[6px] border border-border-subtle bg-white px-2 text-[12px] font-semibold text-textmain">
+                    <button
+                      type="button"
+                      onClick={() => setQty((current) => Math.max(1, current - 1))}
+                      className="interactive flex h-5 w-5 select-none items-center justify-center text-[14px] font-bold text-textmuted hover:text-textmain"
+                    >
+                      -
+                    </button>
+                    <span className="select-none text-[12px] font-bold">{qty}</span>
+                    <button
+                      type="button"
+                      onClick={() => setQty((current) => current + 1)}
+                      className="interactive flex h-5 w-5 select-none items-center justify-center text-[14px] font-bold text-textmuted hover:text-textmain"
+                    >
+                      +
+                    </button>
+                  </div>
 
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  className="flex h-8 items-center gap-1.5 rounded-[6px] bg-primary px-4 text-[12px] font-bold text-white shadow-sm transition-colors hover:bg-[#162e5b]"
-                >
-                  <span className="material-symbols-outlined text-[15px]">
-                    add_shopping_cart
-                  </span>
-                  + Keranjang
-                </button>
-              </div>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      className="interactive press flex h-8 items-center gap-1.5 rounded-[6px] bg-primary px-4 text-[12px] font-bold text-white shadow-sm hover:bg-primary-hover"
+                    >
+                      <span className="material-symbols-outlined text-[15px]">
+                        add_shopping_cart
+                      </span>
+                      + Keranjang
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
