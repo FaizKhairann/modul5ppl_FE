@@ -46,6 +46,29 @@ export interface BusinessUnit {
   updated_at?: string;
 }
 
+export interface Partner {
+  id: number;
+  partner_id: string;
+  unit_usaha_id: number;
+  user_id?: number;
+  nama_usaha?: string;
+  name: string;
+  kategori_usaha?: string;
+  category: string;
+  deskripsi_usaha?: string;
+  description?: string;
+  alamat_usaha?: string;
+  address?: string;
+  nomor_telepon_usaha?: string;
+  phone?: string;
+  email_usaha?: string;
+  email?: string;
+  profil_usaha?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface TaxRate {
   id: string;
   name: string;

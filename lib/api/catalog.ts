@@ -5,6 +5,7 @@ import type {
   BusinessUnit,
   CatalogFilters,
   CatalogOverview,
+  Partner,
   Product,
 } from "@/lib/types/api";
 
@@ -29,6 +30,7 @@ export async function getFilters(): Promise<CatalogFilters> {
 export interface ProductQuery {
   q?: string;
   unit_usaha_id?: number;
+  partner_id?: string;
   category?: string;
   type?: string;
   sort?: string;
@@ -42,6 +44,31 @@ export interface ProductList {
   products: Product[];
   meta?: ApiMeta;
   message?: string;
+}
+
+export interface PartnerQuery {
+  q?: string;
+  unit_usaha_id?: number;
+  category?: string;
+  page?: number;
+  per_page?: number;
+}
+
+export interface PartnerList {
+  partners: Partner[];
+  meta?: ApiMeta;
+}
+
+export async function getPartners(
+  params: PartnerQuery = {},
+): Promise<PartnerList> {
+  const res = await apiClient.get<ApiSuccess<Partner[]>>("/catalog/partners", {
+    params,
+  });
+  return {
+    partners: res.data.data,
+    meta: res.data.meta,
+  };
 }
 
 export async function getProducts(

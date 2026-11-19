@@ -1,12 +1,17 @@
 import EmptyState from "@/components/catalog/EmptyState";
 import CategoryFilter from "@/components/catalog/CategoryFilter";
+import PartnerFilter from "@/components/catalog/PartnerFilter";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import Pagination from "@/components/catalog/Pagination";
 import ServiceRequestLauncher from "@/components/catalog/ServiceRequestLauncher";
 import { ServiceRequestProvider } from "@/components/catalog/ServiceRequestProvider";
-import UnitFilter from "@/components/catalog/UnitFilter";
 import { Navbar } from "@/components/layout/Navbar";
-import { getBusinessUnits, getFilters, getProducts } from "@/lib/api/catalog";
+import {
+  getBusinessUnits,
+  getFilters,
+  getPartners,
+  getProducts,
+} from "@/lib/api/catalog";
 
 const PRODUCTS_PER_PAGE = 8;
 
@@ -34,32 +39,30 @@ export default async function Home({ searchParams }: Props) {
     ? resolvedSearchParams.category[0]
     : resolvedSearchParams.category;
 
-  const unitParam = Array.isArray(resolvedSearchParams.unit_usaha_id)
-    ? resolvedSearchParams.unit_usaha_id[0]
-    : resolvedSearchParams.unit_usaha_id;
+  const partnerParam = Array.isArray(resolvedSearchParams.partner_id)
+    ? resolvedSearchParams.partner_id[0]
+    : resolvedSearchParams.partner_id;
 
   const page = pageParam ? Number(pageParam) : 1;
   const query = queryParam?.trim() || undefined;
   const categoryQuery = categoryParam?.trim() || undefined;
-  const parsedUnitId = unitParam ? Number(unitParam) : undefined;
-  const activeUnitId =
-    parsedUnitId && Number.isFinite(parsedUnitId) && parsedUnitId > 0
-      ? parsedUnitId
-      : undefined;
+  const activePartnerId = partnerParam?.trim() || undefined;
 
-  const [filters, businessUnits, productList] = await Promise.all([
+  const [filters, businessUnits, partnerList, productList] = await Promise.all([
     getFilters(),
     getBusinessUnits(),
+    getPartners({ per_page: 20 }),
     // shortcut: pakai 8 item per halaman agar sesuai prototype UI/UX saat ini.
     getProducts({
       per_page: PRODUCTS_PER_PAGE,
       q: query,
       category: categoryQuery,
-      unit_usaha_id: activeUnitId,
+      partner_id: activePartnerId,
       page,
     }),
   ]);
 
+  const partners = Array.isArray(partnerList.partners) ? partnerList.partners : [];
   const products = Array.isArray(productList.products) ? productList.products : [];
   const totalProducts = productList.meta?.total ?? products.length;
   const categories = filters.categories ?? [];
@@ -68,24 +71,24 @@ export default async function Home({ searchParams }: Props) {
         (category) => category.toLowerCase() === categoryQuery.toLowerCase(),
       ) ?? categoryQuery
     : undefined;
-  const activeUnit = activeUnitId
-    ? businessUnits.find((unit) => unit.id === activeUnitId)
+  const activePartner = activePartnerId
+    ? partners.find((partner) => partner.partner_id === activePartnerId)
     : undefined;
-  const activeUnitLabel = activeUnit?.name ?? (activeUnitId ? `Unit #${activeUnitId}` : undefined);
+  const activePartnerLabel = activePartner?.name ?? activePartnerId;
   const isEmpty = products.length === 0;
   const totalPages = productList.meta?.total_pages ?? 1;
   const activeFilterLabels = [
     query ? `kata kunci "${query}"` : null,
-    activeUnitLabel ? `unit ${activeUnitLabel}` : null,
+    activePartnerLabel ? `mitra ${activePartnerLabel}` : null,
     activeCategory
       ? `kategori ${activeCategory === "SERVICE" ? "Jasa" : activeCategory === "PRODUCT" ? "Produk" : activeCategory}`
       : null,
   ].filter(Boolean) as string[];
 
-  const emptyDescription = activeUnitLabel
+  const emptyDescription = activePartnerLabel
     ? activeFilterLabels.length === 1
-      ? `Belum ada produk atau jasa yang terhubung ke unit ${activeUnitLabel}. Integrasi filter unit sudah aktif; data relasi produk-unit belum tersedia dari modul terkait.`
-      : `Tidak ada produk yang cocok dengan ${activeFilterLabels.join(" + ")}. Integrasi filter unit sudah aktif; data relasi produk-unit belum tersedia dari modul terkait.`
+      ? `Belum ada produk atau jasa dari mitra ${activePartnerLabel}. Data mitra sudah tersinkron dari Modul 3; relasi produk ke mitra belum tersedia karena Modul 4 belum terhubung ke Modul 3.`
+      : `Tidak ada produk yang cocok dengan ${activeFilterLabels.join(" + ")}. Data mitra sudah tersinkron dari Modul 3; relasi produk ke mitra belum tersedia karena Modul 4 belum terhubung ke Modul 3.`
     : activeFilterLabels.length > 0
       ? `Tidak ada produk yang cocok dengan ${activeFilterLabels.join(" + ")}. Coba ubah pencarian atau reset filter untuk melihat semua produk.`
       : undefined;
@@ -138,11 +141,11 @@ export default async function Home({ searchParams }: Props) {
               </div>
             </div>
 
-            <UnitFilter businessUnits={businessUnits} activeUnitId={activeUnitId} />
+            <PartnerFilter partners={partners} activePartnerId={activePartnerId} />
             <CategoryFilter categories={categories} activeCategory={activeCategory} />
 
             <div className="mt-3 text-[12px] text-textmuted sm:text-[13px]">
-              Menampilkan katalog dari {businessUnits.length} unit usaha aktif.
+              Menampilkan katalog dari {partners.length} mitra terverifikasi.
             </div>
           </div>
         </section>

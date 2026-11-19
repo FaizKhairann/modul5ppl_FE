@@ -1,27 +1,27 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import type { BusinessUnit } from "@/lib/types/api";
+import type { Partner } from "@/lib/types/api";
 
-interface UnitFilterProps {
-  businessUnits: BusinessUnit[];
-  activeUnitId?: number;
+interface PartnerFilterProps {
+  partners: Partner[];
+  activePartnerId?: string;
 }
 
-export default function UnitFilter({
-  businessUnits,
-  activeUnitId,
-}: UnitFilterProps) {
+export default function PartnerFilter({
+  partners,
+  activePartnerId,
+}: PartnerFilterProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  function setUnit(unitId?: number) {
+  function setPartner(partnerId?: string) {
     const params = new URLSearchParams(Array.from(searchParams.entries()));
 
-    if (unitId == null) {
-      params.delete("unit_usaha_id");
+    if (!partnerId) {
+      params.delete("partner_id");
     } else {
-      params.set("unit_usaha_id", String(unitId));
+      params.set("partner_id", partnerId);
     }
 
     params.delete("page");
@@ -35,36 +35,36 @@ export default function UnitFilter({
     <div className="mt-3.5 border-t border-borderline/60 pt-3.5">
       <div className="flex flex-wrap items-center gap-1.5">
         <span className="mr-1 text-[12px] font-semibold tracking-wider text-textmuted uppercase">
-          Unit:
+          Mitra:
         </span>
 
         <button
           type="button"
-          onClick={() => setUnit(undefined)}
+          onClick={() => setPartner(undefined)}
           className={`interactive press h-[30px] rounded-full px-3.5 text-[12px] font-semibold ${
-            activeUnitId == null
+            activePartnerId == null
               ? "bg-pillactive text-white"
               : "border border-borderline bg-pillsubtle text-textmain"
           }`}
         >
-          Semua Unit
+          Semua Mitra
         </button>
 
-        {businessUnits.map((unit) => (
+        {partners.map((partner) => (
           <button
             type="button"
-            key={unit.id}
-            onClick={() => setUnit(unit.id)}
+            key={partner.partner_id}
+            onClick={() => setPartner(partner.partner_id)}
             className={`interactive press inline-flex h-[30px] items-center rounded-full px-3.5 text-[12px] font-semibold ${
-              activeUnitId === unit.id
+              activePartnerId === partner.partner_id
                 ? "bg-pillactive text-white"
                 : "border border-borderline bg-pillsubtle text-textmain"
             }`}
-            title={[unit.category, unit.division, unit.description]
+            title={[partner.category, partner.address, partner.description]
               .filter(Boolean)
               .join(" • ")}
           >
-            {unit.name}
+            {partner.name}
           </button>
         ))}
       </div>
