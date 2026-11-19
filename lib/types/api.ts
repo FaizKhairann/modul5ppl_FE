@@ -26,10 +26,24 @@ export interface ApiError {
 export interface BusinessUnit {
   id: number;
   name: string;
+  kode_unik?: string;
+  nama?: string;
   category: string;
   division?: string;
   description?: string;
+  profil?: string;
+  status?: string;
   is_active?: boolean;
+  kategori?: {
+    id: number;
+    nama: string;
+  };
+  divisi?: {
+    id: number;
+    nama: string;
+  };
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface TaxRate {

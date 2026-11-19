@@ -6,7 +6,7 @@ import ServiceRequestLauncher from "@/components/catalog/ServiceRequestLauncher"
 import { ServiceRequestProvider } from "@/components/catalog/ServiceRequestProvider";
 import UnitFilter from "@/components/catalog/UnitFilter";
 import { Navbar } from "@/components/layout/Navbar";
-import { getFilters, getProducts } from "@/lib/api/catalog";
+import { getBusinessUnits, getFilters, getProducts } from "@/lib/api/catalog";
 
 const PRODUCTS_PER_PAGE = 8;
 
@@ -34,22 +34,32 @@ export default async function Home({ searchParams }: Props) {
     ? resolvedSearchParams.category[0]
     : resolvedSearchParams.category;
 
+  const unitParam = Array.isArray(resolvedSearchParams.unit_usaha_id)
+    ? resolvedSearchParams.unit_usaha_id[0]
+    : resolvedSearchParams.unit_usaha_id;
+
   const page = pageParam ? Number(pageParam) : 1;
   const query = queryParam?.trim() || undefined;
   const categoryQuery = categoryParam?.trim() || undefined;
+  const parsedUnitId = unitParam ? Number(unitParam) : undefined;
+  const activeUnitId =
+    parsedUnitId && Number.isFinite(parsedUnitId) && parsedUnitId > 0
+      ? parsedUnitId
+      : undefined;
 
-  const [filters, productList] = await Promise.all([
+  const [filters, businessUnits, productList] = await Promise.all([
     getFilters(),
+    getBusinessUnits(),
     // shortcut: pakai 8 item per halaman agar sesuai prototype UI/UX saat ini.
     getProducts({
       per_page: PRODUCTS_PER_PAGE,
       q: query,
       category: categoryQuery,
+      unit_usaha_id: activeUnitId,
       page,
     }),
   ]);
 
-  const businessUnits = filters.business_units;
   const products = Array.isArray(productList.products) ? productList.products : [];
   const totalProducts = productList.meta?.total ?? products.length;
   const categories = filters.categories ?? [];
@@ -58,17 +68,25 @@ export default async function Home({ searchParams }: Props) {
         (category) => category.toLowerCase() === categoryQuery.toLowerCase(),
       ) ?? categoryQuery
     : undefined;
+  const activeUnit = activeUnitId
+    ? businessUnits.find((unit) => unit.id === activeUnitId)
+    : undefined;
+  const activeUnitLabel = activeUnit?.name ?? (activeUnitId ? `Unit #${activeUnitId}` : undefined);
   const isEmpty = products.length === 0;
   const totalPages = productList.meta?.total_pages ?? 1;
   const activeFilterLabels = [
     query ? `kata kunci "${query}"` : null,
+    activeUnitLabel ? `unit ${activeUnitLabel}` : null,
     activeCategory
       ? `kategori ${activeCategory === "SERVICE" ? "Jasa" : activeCategory === "PRODUCT" ? "Produk" : activeCategory}`
       : null,
   ].filter(Boolean) as string[];
 
-  const emptyDescription =
-    activeFilterLabels.length > 0
+  const emptyDescription = activeUnitLabel
+    ? activeFilterLabels.length === 1
+      ? `Belum ada produk atau jasa yang terhubung ke unit ${activeUnitLabel}. Integrasi filter unit sudah aktif; data relasi produk-unit belum tersedia dari modul terkait.`
+      : `Tidak ada produk yang cocok dengan ${activeFilterLabels.join(" + ")}. Integrasi filter unit sudah aktif; data relasi produk-unit belum tersedia dari modul terkait.`
+    : activeFilterLabels.length > 0
       ? `Tidak ada produk yang cocok dengan ${activeFilterLabels.join(" + ")}. Coba ubah pencarian atau reset filter untuk melihat semua produk.`
       : undefined;
 
@@ -120,7 +138,7 @@ export default async function Home({ searchParams }: Props) {
               </div>
             </div>
 
-            <UnitFilter businessUnits={businessUnits} />
+            <UnitFilter businessUnits={businessUnits} activeUnitId={activeUnitId} />
             <CategoryFilter categories={categories} activeCategory={activeCategory} />
 
             <div className="mt-3 text-[12px] text-textmuted sm:text-[13px]">
